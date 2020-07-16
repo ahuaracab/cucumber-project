@@ -8,16 +8,68 @@
     <packaging>jar</packaging>
 
     <name>Sample Serenity BDD project using JUnit</name>
+    <profiles>
+        <profile>
+            <id>paralelo</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.22.1</version>
+                        <configuration>
+                            <includes>
+                                <include>**/Runner*.java</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <serenity.fork.count>4</serenity.fork.count>
+                                <serenity.fork.number>4</serenity.fork.number>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+    </profiles>
 
     <properties>
-        <serenity.version>2.2.8</serenity.version>
-        <serenity.maven.version>2.2.8</serenity.maven.version>
+        <serenity.version>2.2.9</serenity.version>
+        <serenity.maven.version>2.2.9</serenity.maven.version>
+<!--        esta linea se agrego para cucumber-->
+        <serenity.cucumber.version>2.2.5</serenity.cucumber.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <encoding>UTF-8</encoding>
         <tags></tags>
         <parallel.tests>4</parallel.tests>
         <webdriver.base.url></webdriver.base.url>
     </properties>
+
+
+<!--    se agrego para cucumber-->
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>bintray</name>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>bintray-plugins</name>
+            <url>https://jcenter.bintray.com</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+<!--    hasta aqui-->
+
     <dependencies>
         <dependency>
             <groupId>net.serenity-bdd</groupId>
@@ -37,6 +89,26 @@
             <version>${serenity.version}</version>
             <scope>test</scope>
         </dependency>
+<!--        Se agrego para cucumber-->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay-webdriver</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-ensure</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-cucumber5</artifactId>
+            <version>${serenity.cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+<!--        Hasta aqui-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -66,7 +138,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M4</version>
+                <version>3.0.0-M5</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -80,6 +152,7 @@
                         <include>**/Test*.java</include>
                         <include>**/*TestSuite.java</include>
                         <include>**/When*.java</include>
+                        <include>**/Runner*.java</include>
                     </includes>
                     <systemPropertyVariables>
                         <webdriver.base.url>${webdriver.base.url}</webdriver.base.url>
@@ -100,7 +173,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -113,6 +186,14 @@
                 <configuration>
                   <tags>${tags}</tags>
                 </configuration>
+<!--                Se agrego dependencia para cucumber-->
+                <dependencies>
+                    <dependency>
+                        <groupId>net.serenity-bdd</groupId>
+                        <artifactId>serenity-core</artifactId>
+                        <version>${serenity.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>serenity-reports</id>
